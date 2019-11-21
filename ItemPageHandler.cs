@@ -33,7 +33,7 @@ namespace ConsoleApp1
                 return reader.ReadToEnd();
             }
         }
-
+        
         public List<Ingredient> GetIngredients(Uri url)
         {
             CurrentPage = url;
@@ -41,13 +41,16 @@ namespace ConsoleApp1
             var content = GetContent();
             int listBegin = content.IndexOf(ItemListIndication);
             int listEnd = content.IndexOf("</ul>", listBegin);
-            for (int i = listBegin; i < listEnd;)
+            for (int i = listBegin;;)
             {
                 i = content.IndexOf("<li>", i) + 4;
+                if (i > listEnd)
+                {
+                    return ingredients;
+                }
                 int end = content.IndexOf("</li>", i);
                 ingredients.Add(new Ingredient { Name = content.Substring(i, end - i).Trim() });
             }
-            return ingredients;
         }
     }
 }
